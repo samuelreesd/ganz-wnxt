@@ -1,0 +1,24 @@
+{
+  "AutoScalingGroupName": "WNXT-INT-USER-ASG",
+  "PolicyName": "WNXT-INT-USER-StepScaleOut",
+  "PolicyType": "StepScaling",
+  "AdjustmentType": "ChangeInCapacity",
+  "MetricAggregationType": "Maximum",
+  "EstimatedInstanceWarmup": 300,
+  "StepAdjustments": [
+    {
+      "MetricIntervalLowerBound": 0,
+      "MetricIntervalUpperBound": 4,
+      "ScalingAdjustment": 1
+    },
+    {
+      "MetricIntervalLowerBound": 4,
+      "MetricIntervalUpperBound": 8,
+      "ScalingAdjustment": 2
+    },
+    {
+      "MetricIntervalLowerBound": 8,
+      "ScalingAdjustment": 3
+    }
+  ]
+}

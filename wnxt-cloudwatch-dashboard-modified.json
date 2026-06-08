@@ -1,0 +1,706 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "# WNXT - Ganz/Webkinz Metrics Dashboard\nNamespace: `Ganz/Webkinz` \u00b7 ASG: `WNXT-INT-USER-ASG` \u00b7 Cluster: `WNXT-INT-CLUSTER`"
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 1,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "## \ud83d\udcca Section 1 \u2014 ASG Aggregate Average across all instances"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Connections Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Connections",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 4,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Sessions Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Sessions",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Threads Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Threads",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Busy Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Busy",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Client Rate Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Client Rate",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 20,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Mem % Used Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem % Used",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 5,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Hung Total",
+        "view": "singleValue",
+        "stat": "Sum",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Hung",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Connections, Sessions & Threads (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "MAX_CONNECTIONS (10)",
+              "value": 10,
+              "color": "#E24B4A"
+            },
+            {
+              "label": "Sessions alert (8)",
+              "value": 8,
+              "color": "#BA7517"
+            }
+          ]
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Connections",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Connections",
+              "color": "#378ADD",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Sessions",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Sessions",
+              "color": "#D4537E",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Threads",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Threads",
+              "color": "#1D9E75",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Memory (MB) - ASG Average",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem Used",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Mem Used",
+              "color": "#378ADD",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Committed",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Mem Committed",
+              "color": "#BA7517",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Init",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Mem Init",
+              "color": "#888780",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Max",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Mem Max",
+              "color": "#D85A30",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Mem % Used (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Warning (80%)",
+              "value": 80,
+              "color": "#BA7517"
+            },
+            {
+              "label": "Critical (90%)",
+              "value": 90,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem % Used",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Mem % Used",
+              "color": "#7F77DD",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Client Rate, Busy & Hung (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Client Rate",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Client Rate",
+              "color": "#1D9E75",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Busy",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Busy",
+              "color": "#BA7517",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Hung",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "Hung",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "RuntimeInGC (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "RuntimeInGC",
+            "AutoScalingGroupName",
+            "WNXT-INT-USER-ASG",
+            "ClusterName",
+            "WNXT-INT-CLUSTER",
+            {
+              "label": "RuntimeInGC",
+              "color": "#639922",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 20,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "## \ud83d\udd0d Section 2 \u2014 Per Instance (active instances only \u2014 use 1h or 3h view)"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 21,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Sessions per Instance",
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Sessions alert (8)",
+              "value": 8,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Sessions\"', 'Maximum', 60)",
+              "id": "e1",
+              "label": "Sessions"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 21,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Connections per Instance",
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "MAX_CONNECTIONS (10)",
+              "value": 10,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Connections\"', 'Maximum', 60)",
+              "id": "e1",
+              "label": "Connections"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 27,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Mem % Used per Instance",
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Warning (80%)",
+              "value": 80,
+              "color": "#BA7517"
+            },
+            {
+              "label": "Critical (90%)",
+              "value": 90,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Mem % Used\"', 'Maximum', 60)",
+              "id": "e1",
+              "label": "Mem % Used"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 27,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Threads per Instance",
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Threads\"', 'Maximum', 60)",
+              "id": "e1",
+              "label": "Threads"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 27,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Hung per Instance",
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Hung\"', 'Sum', 60)",
+              "id": "e1",
+              "label": "Hung"
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

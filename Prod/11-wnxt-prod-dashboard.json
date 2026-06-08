@@ -1,0 +1,512 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "# WNXT - Ganz/Webkinz Metrics Dashboard (PRODUCTION)\nNamespace: `Ganz/Webkinz` \u00b7 ASG: `WNXT-PROD-USER-ASG` \u00b7 Cluster: `WNXT-PROD-CLUSTER`"
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 1,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "## \ud83d\udcca Section 1 \u2014 ASG Aggregate Average across all instances"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Connections Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Connections",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 4,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Sessions Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Sessions",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Threads Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Threads",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Busy Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Busy",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Client Rate Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Client Rate",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 20,
+      "y": 2,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Mem % Used Avg",
+        "view": "singleValue",
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem % Used",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 5,
+      "width": 4,
+      "height": 3,
+      "properties": {
+        "title": "Hung Total",
+        "view": "singleValue",
+        "stat": "Sum",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Hung",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Connections, Sessions & Threads (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Sessions alert (8)",
+              "value": 8,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Connections",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Connections",
+              "color": "#378ADD",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Sessions",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Sessions",
+              "color": "#D4537E",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Threads",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Threads",
+              "color": "#1D9E75",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 8,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Memory (MB) - ASG Average",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem Used",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Mem Used",
+              "color": "#378ADD",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Committed",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Mem Committed",
+              "color": "#BA7517",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Init",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Mem Init",
+              "color": "#888780",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Mem Max",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Mem Max",
+              "color": "#D85A30",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Mem % Used (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Warning (80%)",
+              "value": 80,
+              "color": "#BA7517"
+            },
+            {
+              "label": "Critical (90%)",
+              "value": 90,
+              "color": "#E24B4A"
+            }
+          ]
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Mem % Used",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Mem % Used",
+              "color": "#7F77DD",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "Client Rate, Busy & Hung (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "Client Rate",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Client Rate",
+              "color": "#1D9E75",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Busy",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Busy",
+              "color": "#BA7517",
+              "stat": "Average"
+            }
+          ],
+          [
+            "Ganz/Webkinz",
+            "Hung",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "Hung",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 14,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "RuntimeInGC (ASG Average)",
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Average",
+        "period": 60,
+        "region": "us-east-1",
+        "annotations": {
+          "horizontal": []
+        },
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "Ganz/Webkinz",
+            "RuntimeInGC",
+            "AutoScalingGroupName",
+            "WNXT-PROD-USER-ASG",
+            "ClusterName",
+            "WNXT-PROD-CLUSTER",
+            {
+              "label": "RuntimeInGC",
+              "color": "#639922",
+              "stat": "Average"
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

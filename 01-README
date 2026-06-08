@@ -1,0 +1,58 @@
+aws cloudwatch put-dashboard --dashboard-name "WNXT-Ganz-Webkinz" --dashboard-body file://wnxt-cloudwatch-dashboard.json --region us-east-1
+
+C:\work\ganz\wnxt>aws sns create-topic --name WNXT-Alerts --region us-east-1
+arn:aws:sns:us-east-1:604009108246:WNXT-Alerts 
+
+aws sns subscribe ^
+  --topic-arn arn:aws:sns:us-east-1:604009108246:WNXT-Alerts ^
+  --protocol email ^
+  --notification-endpoint jareks@ganz.com ^
+  --region us-east-1
+
+aws sns subscribe ^
+  --topic-arn arn:aws:sns:us-east-1:604009108246:WNXT-Alerts ^
+  --protocol email ^
+  --notification-endpoint samuelr@ganz.com ^
+  --region us-east-1
+
+Both jareks@ganz.com and samuelr@ganz.com will receive a confirmation email from AWS — both need to click "Confirm subscription" in their email or they won't receive any alarm notifications.
+Once both have confirmed, you're ready to run create-wnxt-alarms.bat
+
+-----------
+
+create-wnxt-alarms.bat
+
+----------- 
+
+C:\work\ganz\wnxt>aws sns list-subscriptions-by-topic ^
+More?   --topic-arn arn:aws:sns:us-east-1:604009108246:WNXT-Alerts ^
+More?   --region us-east-1
+SUBSCRIPTIONS   samuelr@ganz.com        604009108246    email   arn:aws:sns:us-east-1:604009108246:WNXT-Alerts:8ca445f0-a9cc-4613-9797-b0304e188111     arn:aws:sns:us-east-1:604009108246:WNXT-Alerts              
+SUBSCRIPTIONS   jareks@ganz.com 604009108246    email   arn:aws:sns:us-east-1:604009108246:WNXT-Alerts:84e2f9c0-921e-4d10-92a9-09373aae52ac     arn:aws:sns:us-east-1:604009108246:WNXT-Alerts
+
+
+------------
+
+Create Multicast CloudWatch Dashboard
+aws cloudwatch put-dashboard ^
+  --dashboard-name "WNXT-Integration-Multicast" ^
+  --dashboard-body file://wnxt-multicast-dashboard.json ^
+  --region us-east-1
+
+Verify it was created
+aws cloudwatch get-dashboard ^
+  --dashboard-name "WNXT-Integration-Multicast" ^
+  --region us-east-1
+
+
+---------------New Dashboard
+aws cloudwatch put-dashboard ^
+  --dashboard-name "WNXT-Ganz-Webkinz" ^
+  --dashboard-body file://wnxt-cloudwatch-dashboard-modified.json ^
+  --region us-east-1
+
+----------- Old Dashboard
+aws cloudwatch put-dashboard ^
+  --dashboard-name "WNXT-Ganz-Webkinz" ^
+  --dashboard-body file://02-wnxt-cloudwatch-dashboard.json ^
+  --region us-east-1

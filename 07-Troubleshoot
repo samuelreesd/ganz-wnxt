@@ -1,0 +1,66 @@
+aws ssm start-session ^  --target i-03c5a094377ace7e7 ^  --region us-east-1
+
+
+Once Inside:
+# Is Java running?
+ps aux | grep java
+
+# Is port 8080 listening?
+ss -tlnp | grep 8080
+
+# Test health endpoint directly
+curl -v http://localhost:8080/health
+
+# Check service status
+sudo systemctl status wnxt-user.service
+
+# Check service logs
+sudo journalctl -u wnxt-user.service -n 50
+
+Check HealthCheck Grace Period
+C:\work\ganz\wnxt>aws autoscaling describe-auto-scaling-groups ^  --auto-scaling-group-names WNXT-INT-USER-ASG ^  --query "AutoScalingGroups[*].HealthCheckGracePeriod" ^  --region us-east-1
+300  
+
+
+Check of SG allows access to Port 8080
+
+C:\work\ganz\wnxt>aws ec2 describe-security-groups ^  --group-ids sg-0ec5431ae4f150926 ^  --query "SecurityGroups[*].IpPermissions[?FromPort==`8080`]" ^  --region us-east-1
+
+First check what security group the ALB uses
+
+Now add port 8080 inbound rule to the instance security group, allowing traffic from the ALB security groups:
+
+REM Allow from ALB security group 1
+aws ec2 authorize-security-group-ingress ^
+  --group-id sg-0ec5431ae4f150926 ^
+  --protocol tcp ^
+  --port 8080 ^
+  --source-group sg-0a691660382161b22 ^
+  --region us-east-1
+
+REM Allow from ALB security group 2
+aws ec2 authorize-security-group-ingress ^
+  --group-id sg-0ec5431ae4f150926 ^
+  --protocol tcp ^
+  --port 8080 ^
+  --source-group sg-cf87b6b1 ^
+  --region us-east-1
+
+  Then verify the rules were added:
+
+  aws ec2 describe-security-groups ^
+  --group-ids sg-0ec5431ae4f150926 ^
+  --query "SecurityGroups[*].IpPermissions[?FromPort==`8080`]" ^
+  --region us-east-1
+
+  Then check target group health — should go healthy within 1-2 minutes:
+
+  Check Environment Variable
+
+  [root@ip-10-2-170-19 ~]# cat /etc/environment
+INSTANCE_ID=i-03c5a094377ace7e7
+[root@ip-10-2-170-19 ~]# 
+[root@ip-10-2-170-19 ~]# 
+[root@ip-10-2-170-19 ~]# cat /proc/$(pgrep java)/environ | tr '\0' '\n' | grep INSTANCE_ID
+INSTANCE_ID=i-03c5a094377ace7e7
+

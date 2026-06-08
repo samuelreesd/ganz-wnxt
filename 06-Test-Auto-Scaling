@@ -1,0 +1,40 @@
+***************************************Verify Alarm is Linked to Scaling Policy
+aws cloudwatch describe-alarms ^
+  --alarm-names "WNXT-INT-USER-Connections-ScaleOut" ^
+  --query "MetricAlarms[*].{Name:AlarmName,State:StateValue,Actions:AlarmActions}" ^
+  --region us-east-1
+***************************************Test Scale Out — manually trigger the alarm
+aws cloudwatch set-alarm-state ^
+  --alarm-name "WNXT-INT-USER-Connections-ScaleOut" ^
+  --state-value ALARM ^
+  --state-reason "Manual scale-out test" ^
+  --region us-east-1
+***************************************Watch a Second Instance Launch
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].Instances[*].{ID:InstanceId,State:LifecycleState,Health:HealthStatus}" ^
+  --region us-east-1
+***************************************Bypass the alarm and call the scaling policy directly
+aws autoscaling execute-policy ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --policy-name WNXT-INT-USER-ScaleOut ^
+  --no-honor-cooldown ^
+  --region us-east-1
+***************************************Check ASG Activity History
+aws autoscaling describe-scaling-activities ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --max-items 10 ^
+  --region us-east-1
+****************************************Test Scale In
+aws cloudwatch set-alarm-state ^
+  --alarm-name "WNXT-INT-USER-Connections-ScaleIn" ^
+  --state-value ALARM ^
+  --state-reason "Manual scale-in test" ^
+  --region us-east-1
+****************************************Test Scale in directly
+aws autoscaling execute-policy ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --policy-name WNXT-INT-USER-ScaleIn ^
+  --no-honor-cooldown ^
+  --region us-east-1
+****************************************

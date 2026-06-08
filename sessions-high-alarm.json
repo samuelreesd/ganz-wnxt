@@ -1,0 +1,22 @@
+{
+  "AlarmName": "WNXT-Sessions-High",
+  "AlarmDescription": "Average Sessions across all WNXT-INT-USER-ASG instances crossed 8",
+  "Namespace": "Ganz/Webkinz",
+  "MetricName": "Sessions",
+  "Dimensions": [
+    {"Name": "AutoScalingGroupName", "Value": "WNXT-INT-USER-ASG"},
+    {"Name": "ClusterName",          "Value": "WNXT-INT-CLUSTER"}
+  ],
+  "Statistic": "Average",
+  "Period": 60,
+  "Threshold": 8.0,
+  "ComparisonOperator": "GreaterThanThreshold",
+  "EvaluationPeriods": 1,
+  "TreatMissingData": "notBreaching",
+  "AlarmActions": [
+    "arn:aws:sns:us-east-1:604009108246:WNXT-Alerts"
+  ],
+  "OKActions": [
+    "arn:aws:sns:us-east-1:604009108246:WNXT-Alerts"
+  ]
+}

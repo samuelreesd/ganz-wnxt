@@ -1,0 +1,32 @@
+{
+  "AlarmName": "WNXT-Sessions-High",
+  "AlarmDescription": "Average Sessions across all WNXT-INT-USER-ASG instances crossed 8",
+  "Metrics": [
+    {
+      "Id": "m1",
+      "Expression": "SEARCH('{Ganz/Webkinz,AutoScalingGroupName,ClusterName,InstanceId} AutoScalingGroupName=\"WNXT-INT-USER-ASG\" ClusterName=\"WNXT-INT-CLUSTER\" MetricName=\"Sessions\"', 'Maximum', 60)",
+      "Label": "SessionsPerInstance",
+      "ReturnData": false,
+      "Period": 60
+    },
+    {
+      "Id": "e1",
+      "Expression": "AVG(m1)",
+      "Label": "AverageSessionsAcrossInstances",
+      "ReturnData": true,
+      "Period": 60
+    }
+  ],
+  "ComparisonOperator": "GreaterThanThreshold",
+  "Threshold": 8.0,
+  "EvaluationPeriods": 1,
+  "TreatMissingData": "notBreaching",
+  "AlarmActions": [
+    "arn:aws:autoscaling:us-east-1:604009108246:scalingPolicy:78328ad6-8a73-45d2-834a-a100f0d3db50:autoScalingGroupName/WNXT-INT-USER-ASG:policyName/WNXT-INT-USER-StepScaleOut",
+    "arn:aws:sns:us-east-1:604009108246:WNXT-Alerts"
+  ],
+  "OKActions": [
+    "arn:aws:autoscaling:us-east-1:604009108246:scalingPolicy:45a5d4df-db1f-4d58-907a-d35ca6d131e9:autoScalingGroupName/WNXT-INT-USER-ASG:policyName/WNXT-INT-USER-StepScaleIn",
+    "arn:aws:sns:us-east-1:604009108246:WNXT-Alerts"
+  ]
+}

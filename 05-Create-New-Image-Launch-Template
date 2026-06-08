@@ -1,0 +1,98 @@
+#########################################Regular Release Steps
+*****************************************Create new AMI from the builder
+aws ec2 create-image ^
+  --instance-id i-02799cb4173e727b5 ^
+  --name "WNXT-Int-User-AMI-v18" ^
+  --description "WNXT Int User AMI v18 - Introduced Lifecycle hook polling and graceful shutdown 300secs" ^
+  --no-reboot ^
+  --region us-east-1
+***************************************Wait for AMI to be available
+aws ec2 describe-images ^
+  --image-ids ami-02ff44c611b0d0e41 ^
+  --query "Images[*].{ID:ImageId,State:State,Name:Name}" ^
+  --region us-east-1
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Block to change Instance Type @@@@@@@@@@@@@@@@@@@
+*************************************** First check the Launch Template
+aws ec2 describe-launch-template-versions ^
+  --launch-template-id lt-0e83e6c7035618f23 ^
+  --query "LaunchTemplateVersions[*].{Version:VersionNumber,Default:DefaultVersion,Description:VersionDescription,AMI:LaunchTemplateData.ImageId,InstanceType:LaunchTemplateData.InstanceType,IAMProfile:LaunchTemplateData.IamInstanceProfile.Name}" ^
+  --region us-east-1
+*************************************** Create v5 from v4 with m5.large (Changing Instance Type)
+aws ec2 create-launch-template-version ^
+  --launch-template-id lt-0e83e6c7035618f23 ^
+  --source-version 4 ^
+  --version-description "v5 - upgrade to m5.large" ^
+  --launch-template-data "{\"InstanceType\":\"m5.large\"}" ^
+  --region us-east-1
+************************************** Then set it as default
+aws ec2 modify-launch-template ^
+  --launch-template-id lt-0e83e6c7035618f23 ^
+  --default-version 5 ^
+  --region us-east-1
+************************************* Now update ASG and force relaunch
+REM Update ASG to use latest version
+aws autoscaling update-auto-scaling-group ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --launch-template LaunchTemplateId=lt-0e83e6c7035618f23,Version=$Latest ^
+  --region us-east-1
+
+REM Get current instance ID
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].Instances[*].{ID:InstanceId,Type:InstanceType,State:LifecycleState}" ^
+  --region us-east-1
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Block to change Instance Type @@@@@@@@@@@@@@@@@@@
+*************************************** Create new Launch Template version with new AMI
+aws ec2 create-launch-template-version ^
+  --launch-template-id lt-0e83e6c7035618f23 ^
+  --source-version 17 ^
+  --version-description "v18 - Introduced Lifecycle hook polling and graceful shutdown 300secs" ^
+  --launch-template-data "{\"ImageId\":\"ami-02ff44c611b0d0e41\"}" ^
+  --region us-east-1
+****************************************Set new version as default
+aws ec2 modify-launch-template ^
+  --launch-template-id lt-0e83e6c7035618f23 ^
+  --default-version 18 ^
+  --region us-east-1
+**************************************** Confirm the default, latest version of the Launch Template
+aws ec2 describe-launch-templates ^
+  --launch-template-ids lt-0e83e6c7035618f23 ^
+  --query "LaunchTemplates[0].{Default:DefaultVersionNumber,Latest:LatestVersionNumber}" ^
+  --output table ^
+  --region us-east-1
+**************************************** Confirm the ASG is configured to use "Latest" Launch Template
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[0].{ASG:AutoScalingGroupName,LaunchTemplateId:LaunchTemplate.LaunchTemplateId,Version:LaunchTemplate.Version}" ^
+  --output table ^
+  --region us-east-1
+**************************************** From Above if ASG is not using "Latest" Update ASG to use latest version
+aws autoscaling update-auto-scaling-group ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --launch-template LaunchTemplateId=lt-0e83e6c7035618f23,Version=$Latest ^
+  --region us-east-1
+*************************************Terminate current instance to force fresh launch from new AMI
+aws ec2 terminate-instances ^
+  --instance-ids i-03742c689266dc773 ^
+  --region us-east-1
+*************************************Resume the ASG Process
+aws autoscaling resume-processes ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --scaling-processes Launch Terminate HealthCheck ReplaceUnhealthy ^
+  --region us-east-1
+**************************************Watch for a new instance
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].Instances[*].{ID:InstanceId,State:LifecycleState,Health:HealthStatus}" ^
+  --region us-east-1
+**************************************
+######################################Verify everything end to end:
+**************************************Verify Target Group Health
+aws elbv2 describe-target-health ^
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-integration-user/681a4dc3768c2eee ^
+  --region us-east-1
+**************************************Verify ASG Instance is InService
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].Instances[*].{ID:InstanceId,State:LifecycleState,Health:HealthStatus}" ^
+  --region us-east-1

@@ -1,0 +1,66 @@
+
+
+Step 1 — Delete old Simple Scaling policies
+
+aws autoscaling delete-policy ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --policy-name WNXT-INT-USER-ScaleOut ^
+  --region us-east-1
+
+aws autoscaling delete-policy ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --policy-name WNXT-INT-USER-ScaleIn ^
+  --region us-east-1
+
+
+Step 2 — Create Step Scaling Scale IN / Out policies
+
+Step 3 — Deploy both policies
+
+aws autoscaling put-scaling-policy ^
+  --cli-input-json file://step-scaleout-policy.json ^
+  --region us-east-1
+
+aws autoscaling put-scaling-policy ^
+  --cli-input-json file://step-scalein-policy.json ^
+  --region us-east-1
+
+
+Step 3.5 - Get the ARNS from above scalein and scaleout policies
+
+aws autoscaling describe-policies ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --policy-names WNXT-INT-USER-StepScaleOut WNXT-INT-USER-StepScaleIn ^
+  --query "ScalingPolicies[*].{Name:PolicyName,ARN:PolicyARN}" ^
+  --region us-east-1
+
+Step 4 — Update WNXT-Sessions-High alarm to trigger Scale Out
+
+aws cloudwatch put-metric-alarm ^
+  --cli-input-json file://sessions-high-alarm.json ^
+  --region us-east-1
+
+
+Step 5 - Verify
+
+aws cloudwatch describe-alarms ^
+  --alarm-names "WNXT-Sessions-High" ^
+  --region us-east-1
+
+
+Test the Step Scaling
+Publish test values to see each step trigger:
+Test Step 1 — Sessions = 9 (just above 8, should add 1 instance)
+
+aws cloudwatch put-metric-data ^
+  --namespace "Ganz/Webkinz" ^
+  --metric-data file://test-sessions-metric.json ^
+  --region us-east-1
+
+Update test-sessions-metric.json value to 9, then 13, then 17 to test each step. Watch the ASG:
+
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].{Desired:DesiredCapacity,Min:MinSize,Max:MaxSize,Instances:Instances[*].{ID:InstanceId,State:LifecycleState}}" ^
+  --region us-east-1
+

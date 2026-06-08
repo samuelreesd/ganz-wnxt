@@ -1,0 +1,11 @@
+[
+  {
+    "MetricName": "Sessions",
+    "Value": 9,
+    "Unit": "Count",
+    "Dimensions": [
+      {"Name": "AutoScalingGroupName", "Value": "WNXT-INT-USER-ASG"},
+      {"Name": "ClusterName",          "Value": "WNXT-INT-CLUSTER"}
+    ]
+  }
+]

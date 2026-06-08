@@ -1,0 +1,53 @@
+Deployment Steps
+On Image Builder (ip-10-2-170-115)
+bash# Copy scripts
+cp graceful-shutdown.sh /usr/local/bin/
+cp poll-lifecycle.sh /usr/local/bin/
+chmod +x /usr/local/bin/graceful-shutdown.sh
+chmod +x /usr/local/bin/poll-lifecycle.sh
+
+# Add to crontab
+crontab -e
+Add this line:
+# Poll for ASG lifecycle termination hook every minute
+* * * * * /usr/local/bin/poll-lifecycle.sh
+
+# Rotate log weekly
+0 0 * * 0 > /var/log/graceful-shutdown.log
+
+From Jarek's PC — Add IAM Permission
+aws iam put-role-policy ^
+  --role-name ganz-cloudwatch-addnl-metrics ^
+  --policy-name WNXT-Lifecycle-Complete ^
+  --policy-document file://add-lifecycle-iam-policy.json ^
+  --region us-east-1
+
+Complete Graceful Shutdown Flow
+ASG decides to terminate instance
+        ↓
+Lifecycle hook → Terminating:Wait (max 5 minutes)
+        ↓
+poll-lifecycle.sh detects Terminating:Wait (within 1 min)
+        ↓
+graceful-shutdown.sh runs:
+  Step 1: Deregister from ALB readiness TG → no new traffic ✅
+  Step 2: Sleep 30s → in-flight connections drain ✅
+  Step 3: systemctl stop wnxt-user.service ✅
+  Step 4: Remove from hub hostslist + trigger reconcile ✅
+  Step 5: Signal ASG CONTINUE ✅
+        ↓
+Instance terminates cleanly ✅
+
+Total time ≈ 45 seconds ← well within 5 min ✅
+
+
+
+
+
+After Deployment — Rebuild AMI
+cmdaws ec2 create-image ^
+  --instance-id i-02799cb4173e727b5 ^
+  --name "WNXT-Int-User-AMI-v8" ^
+  --description "WNXT Int User AMI v8 - graceful shutdown lifecycle hook" ^
+  --no-reboot ^
+  --region us-east-1

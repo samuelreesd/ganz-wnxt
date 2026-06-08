@@ -1,0 +1,17 @@
+[
+  {
+    "Type": "forward",
+    "ForwardConfig": {
+      "TargetGroups": [
+        {
+          "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b",
+          "Weight": 100
+        },
+        {
+          "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-integration-user/681a4dc3768c2eee",
+          "Weight": 0
+        }
+      ]
+    }
+  }
+]

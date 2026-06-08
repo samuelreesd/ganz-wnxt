@@ -1,0 +1,160 @@
+********************************************  Step 1 — Create new readiness target group
+aws elbv2 create-target-group ^
+  --name tgrp-wnxt-int-user-readiness ^
+  --protocol HTTP ^
+  --port 80 ^
+  --protocol-version HTTP1 ^
+  --vpc-id vpc-4c677e2a ^
+  --health-check-protocol HTTP ^
+  --health-check-path "/readiness" ^
+  --health-check-port "8080" ^
+  --health-check-interval-seconds 20 ^
+  --health-check-timeout-seconds 5 ^
+  --healthy-threshold-count 2 ^
+  --unhealthy-threshold-count 2 ^
+  --matcher HttpCode=200 ^
+  --target-type instance ^
+  --region us-east-1
+*************************************  Get the ARN
+aws elbv2 describe-target-groups ^
+  --names tgrp-wnxt-int-user-readiness ^
+  --query "TargetGroups[*].TargetGroupArn" ^
+  --region us-east-1
+************************************* Update ALB rule to use readiness target group
+aws elbv2 modify-rule ^
+  --rule-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:listener-rule/app/alb-wnxt-i/e6fe1b87c2e6eede/3e4ac046072ca13a/60824d35dd9d96e1 ^
+  --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b ^
+  --region us-east-1
+************************************ Verify the rule was updated
+aws elbv2 describe-rules ^
+  --listener-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:listener/app/alb-wnxt-i/e6fe1b87c2e6eede/3e4ac046072ca13a ^
+  --query "Rules[?Priority=='10'].{Priority:Priority,TG:Actions[0].TargetGroupArn,Condition:Conditions[0].Values}" ^
+  --region us-east-1
+*********************************** Step 4 — Attach readiness target group to ASG (So every new instance auto-registers in both target groups:)
+aws autoscaling attach-load-balancer-target-groups ^
+  --auto-scaling-group-name WNXT-INT-USER-ASG ^
+  --target-group-arns arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-user-readiness/c14ddc75fcc7d582 ^
+  --region us-east-1
+***********************************  Verify ASG has two Target Groups
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].TargetGroupARNs" ^
+  --region us-east-1
+***********************************  Should show both
+tgrp-wnxt-integration-user   ← /health  → ASG instance lifecycle
+tgrp-wnxt-user-readiness     ← /readiness → ALB traffic control
+*********************************** Verify instances register in both target groups (Watch instances come up)
+aws autoscaling describe-auto-scaling-groups ^
+  --auto-scaling-group-names WNXT-INT-USER-ASG ^
+  --query "AutoScalingGroups[*].Instances[*].{ID:InstanceId,State:LifecycleState,Health:HealthStatus}" ^
+  --region us-east-1
+*********************************** Check Health TG
+aws elbv2 describe-target-health ^
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-integration-user/681a4dc3768c2eee ^
+  --region us-east-1
+*********************************** Check Readiness TG
+aws elbv2 describe-target-health ^
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b ^
+  --region us-east-1
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Required Fixes
+
+******************************* What we actually need is:
+tgrp-wnxt-int-user-readiness receives user traffic via ALB rule
+tgrp-wnxt-integration-user receives health check requests only from ALB
+******************************* The Real Answer — Weight=0 Trick (Set tgrp-wnxt-integration-user weight to 0 — ALB sends health checks but no traffic:)
+What Weight=0 Does
+tgrp-wnxt-int-user-readiness100✅ Receives all traffic✅ ALB checks /readiness
+tgrp-wnxt-integration-user0❌ No traffic✅ ALB checks /health
+
+This Solves Everything! ✅
+
+ALB sends health checks to both TGs ✅
+tgrp-wnxt-integration-user /health non-200
+        ↓
+ASG health check type ELB
+        ↓
+ASG detects unhealthy → replaces instance ✅
+
+tgrp-wnxt-int-user-readiness /readiness 503
+        ↓
+ALB stops traffic → instance stays alive ✅
+ASG ignores /readiness result ✅ (weight=0 TG is health-only)
+
+The Definitive Clean Solution
+Use EC2 health check type + weight=0 for health TG:
+ASG health check: EC2 → detects OS crashes ✅
+ALB weight=0 TG: /health → ALB sends health checks ✅
+                           → ASG ignores TG results ✅
+ALB weight=100 TG: /readiness → controls traffic ✅
+******************************** Create a json file wnxt-alb-rule-action.json
+[
+  {
+    "Type": "forward",
+    "ForwardConfig": {
+      "TargetGroups": [
+        {
+          "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b",
+          "Weight": 100
+        },
+        {
+          "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-integration-user/681a4dc3768c2eee",
+          "Weight": 0
+        }
+      ]
+    }
+  }
+]
+*********************************  Execute the following to update the rule to forward to two target groups
+aws elbv2 modify-rule ^
+  --rule-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:listener-rule/app/alb-wnxt-i/e6fe1b87c2e6eede/3e4ac046072ca13a/60824d35dd9d96e1 ^
+  --actions file://wnxt-alb-rule-action.json ^
+  --region us-east-1
+********************************  Current State — Perfect Setup
+Image 1 — ALB Listener Rule (Priority 10):
+Target Group                      Weight                       Purpose
+tgrp-wnxt-int-user-readiness      100%                         ✅ Receives all traffic
+tgrp-wnxt-integration-user          0%                         ✅ Health checks only
+******************************** Now Verify Both TGs Are Healthy
+REM Health TG
+aws elbv2 describe-target-health ^
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-integration-user/681a4dc3768c2eee ^
+  --region us-east-1
+
+REM Readiness TG
+aws elbv2 describe-target-health ^
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b ^
+  --region us-east-1
+****************************** Last Remaining Task — Self-registration in machine-specifics.sh
+Add this to the end of /opt/webkinz-next/systems/user-server/machine-specifics.sh on the image builder:
+
+### Register this instance in the readiness target group
+aws elbv2 register-targets \
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-int-user-readiness/f41e3007f3d1d40b \
+  --targets Id=${INSTANCE_ID},Port=80 \
+  --region us-east-1
+echo "Registered ${INSTANCE_ID} in readiness target group"
+****************************** Complete Final Architecture 🎉
+Java app crashes → /health non-200
+        ↓
+tgrp-wnxt-integration-user unhealthy
+        ↓
+ASG (ELB health check) replaces instance ✅
+
+Connections > 100 → /readiness 503
+        ↓
+tgrp-wnxt-int-user-readiness stops traffic
+        ↓
+Instance stays alive ✅
+ASG ignores /readiness ✅
+
+New instance launches
+        ↓
+Auto-registers in tgrp-wnxt-integration-user via ASG ✅
+Self-registers in tgrp-wnxt-int-user-readiness via machine-specifics.sh ✅
+
+CloudWatch Connections > 50 → Scale Out ✅
+CloudWatch Connections < 20 → Scale In  ✅
+
+
+
