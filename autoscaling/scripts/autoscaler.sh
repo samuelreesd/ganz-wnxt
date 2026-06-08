@@ -20,12 +20,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _ONCE=false
 _CONFIG="${SCRIPT_DIR}/../config/autoscaler.conf"
 
-for _arg in "$@"; do
-    case "${_arg}" in
+_early_args=("$@")
+for (( _i=0; _i < ${#_early_args[@]}; _i++ )); do
+    case "${_early_args[${_i}]}" in
         --once)   _ONCE=true ;;
-        --config) _CONFIG="$2" ;;
+        --config) _CONFIG="${_early_args[$(( _i + 1 ))]}"; (( _i++ )) || true ;;
     esac
 done
+unset _early_args _i
 
 CONFIG_FILE="${_CONFIG}"
 export CONFIG_FILE
