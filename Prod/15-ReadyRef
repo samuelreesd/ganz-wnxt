@@ -1,0 +1,16 @@
+./02-create-security-group.sh
+Creating wnxt-prod-user security group...
+Security group created: sg-066a462b5d2f154d3
+Adding inbound rule - port 8080 from ALB...
+True
+SECURITYGROUPRULES      8080    sg-066a462b5d2f154d3    604009108246    tcp     False   arn:aws:ec2:us-east-1:604009108246:security-group-rule/sgr-0136cf01f13fbdad7    sgr-0136cf01f13fbdad7   8080
+REFERENCEDGROUPINFO     sg-04fff5cbf33216ec4    604009108246
+Port 8080 from ALB SG added
+Adding inbound rule - SSH from jump server...
+True
+SECURITYGROUPRULES      22      sg-066a462b5d2f154d3    604009108246    tcp     False   arn:aws:ec2:us-east-1:604009108246:security-group-rule/sgr-0f8131f6c5f341b97    sgr-0f8131f6c5f341b97   22
+REFERENCEDGROUPINFO     sg-015d3d1129b426011    604009108246
+SSH from jump server added
+Security Group ID: sg-066a462b5d2f154d3
+Update this value in subsequent scripts!
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
