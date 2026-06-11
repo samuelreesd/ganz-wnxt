@@ -9,8 +9,8 @@ LISTENER_80=arn:aws:elasticloadbalancing:us-east-1:604009108246:listener/app/alb
 LISTENER_443=arn:aws:elasticloadbalancing:us-east-1:604009108246:listener/app/alb-wnxt/a4a019fc8ef45e8f/4e489d4e53b8c641
 
 # Update these after step 03
-HEALTH_TG_ARN=REPLACE_WITH_HEALTH_TG_ARN_FROM_STEP_03
-READINESS_TG_ARN=REPLACE_WITH_READINESS_TG_ARN_FROM_STEP_03
+HEALTH_TG_ARN=arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user/c7f415e535febd23
+READINESS_TG_ARN=arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-readiness/8db5a31ba3a54a75
 
 echo "Creating ALB rule for prod-user.webkinz.com on port 80..."
 aws elbv2 create-rule \

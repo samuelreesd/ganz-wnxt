@@ -14,3 +14,14 @@ SSH from jump server added
 Security Group ID: sg-066a462b5d2f154d3
 Update this value in subsequent scripts!
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+./03-create-target-groups.sh
+Creating health target group...
+Health TG created: arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user/c7f415e535febd23
+Creating readiness target group...
+Readiness TG created: arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-readiness/8db5a31ba3a54a75
+
+============================================
+IMPORTANT - Save these ARNs:
+Health TG ARN:    arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user/c7f415e535febd23
+Readiness TG ARN: arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-readiness/8db5a31ba3a54a75
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
