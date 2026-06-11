@@ -1,0 +1,96 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0, "y": 0, "width": 24, "height": 1,
+      "properties": {
+        "markdown": "# WNXT Production - Multicast Health Dashboard\nHub: `10.2.150.101` | Namespace: `Ganz/Webkinz` | Reconciliation: every 5 min"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0, "y": 1, "width": 6, "height": 3,
+      "properties": {
+        "title": "Total Hosts in Hostslist",
+        "view": "singleValue", "stat": "Maximum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "metrics": [[ "Ganz/Webkinz", "MulticastTotalHosts", "HubIP", "10.2.150.101" ]]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6, "y": 1, "width": 6, "height": 3,
+      "properties": {
+        "title": "Healthy Hosts in Bridge",
+        "view": "singleValue", "stat": "Maximum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "metrics": [[ "Ganz/Webkinz", "MulticastHealthyHosts", "HubIP", "10.2.150.101" ]]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12, "y": 1, "width": 6, "height": 3,
+      "properties": {
+        "title": "Missing Hosts (not in bridge)",
+        "view": "singleValue", "stat": "Maximum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "metrics": [[ "Ganz/Webkinz", "MulticastMissingHosts", "HubIP", "10.2.150.101" ]]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18, "y": 1, "width": 6, "height": 3,
+      "properties": {
+        "title": "Stale Tunnels Removed",
+        "view": "singleValue", "stat": "Maximum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "metrics": [[ "Ganz/Webkinz", "MulticastStaleHosts", "HubIP", "10.2.150.101" ]]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0, "y": 4, "width": 12, "height": 6,
+      "properties": {
+        "title": "Multicast Host Count Over Time",
+        "view": "timeSeries", "stacked": false, "stat": "Maximum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "yAxis": {"left": {"min": 0}},
+        "metrics": [
+          [ "Ganz/Webkinz", "MulticastTotalHosts",   "HubIP", "10.2.150.101", {"label": "Total Hosts",         "color": "#378ADD"} ],
+          [ "Ganz/Webkinz", "MulticastHealthyHosts", "HubIP", "10.2.150.101", {"label": "Healthy in Bridge",   "color": "#1D9E75"} ],
+          [ "Ganz/Webkinz", "MulticastMissingHosts", "HubIP", "10.2.150.101", {"label": "Missing from Bridge", "color": "#E24B4A"} ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12, "y": 4, "width": 12, "height": 6,
+      "properties": {
+        "title": "Missing & Stale Events",
+        "view": "timeSeries", "stacked": false, "stat": "Sum", "period": 60, "region": "us-east-1",
+        "annotations": {"horizontal": [
+          {"label": "Alert threshold", "value": 1, "color": "#E24B4A"}
+        ]},
+        "yAxis": {"left": {"min": 0}},
+        "metrics": [
+          [ "Ganz/Webkinz", "MulticastMissingHosts", "HubIP", "10.2.150.101", {"label": "Missing Hosts",       "color": "#E24B4A"} ],
+          [ "Ganz/Webkinz", "MulticastStaleHosts",   "HubIP", "10.2.150.101", {"label": "Stale Hosts Removed", "color": "#BA7517"} ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0, "y": 10, "width": 24, "height": 6,
+      "properties": {
+        "title": "Active Hosts Only (status=1, auto-discovers all hosts, terminated hosts disappear immediately)",
+        "view": "timeSeries", "stacked": false, "period": 300, "region": "us-east-1",
+        "annotations": {"horizontal": []},
+        "yAxis": {"left": {"min": 0, "max": 2}},
+        "metrics": [[{
+          "expression": "SEARCH('{Ganz/Webkinz,HubIP,HostIP} HubIP=\"10.2.150.101\" MetricName=\"MulticastHostStatus\"', 'Maximum', 300)",
+          "label": "", "id": "e1", "region": "us-east-1"
+        }]]
+      }
+    }
+  ]
+}
