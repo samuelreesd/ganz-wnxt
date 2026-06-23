@@ -18,8 +18,7 @@ cat > /tmp/prod-target-tracking-policy.json << 'JSON'
     "Statistic": "Average"
   },
   "TargetValue": 6.0,
-  "ScaleInCooldown": 300,
-  "ScaleOutCooldown": 300
+  "DisableScaleIn": false
 }
 JSON
 
@@ -27,6 +26,7 @@ aws autoscaling put-scaling-policy \
   --auto-scaling-group-name ${ASG_NAME} \
   --policy-name "WNXT-PROD-USER-TargetTracking-Sessions" \
   --policy-type TargetTrackingScaling \
+  --estimated-instance-warmup 300 \
   --target-tracking-configuration file:///tmp/prod-target-tracking-policy.json \
   --region ${REGION}
 

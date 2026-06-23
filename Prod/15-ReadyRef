@@ -25,3 +25,45 @@ IMPORTANT - Save these ARNs:
 Health TG ARN:    arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user/c7f415e535febd23
 Readiness TG ARN: arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-readiness/8db5a31ba3a54a75
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Step 1 — Create NLB Target Group
+
+aws elbv2 create-target-group \
+  --name "tgrp-wnxt-prod-user-cstool" \
+  --protocol TCP \
+  --port 11802 \
+  --vpc-id vpc-4c677e2a \
+  --health-check-protocol TCP \
+  --health-check-port 11802 \
+  --health-check-interval-seconds 30 \
+  --healthy-threshold-count 2 \
+  --unhealthy-threshold-count 2 \
+  --target-type instance \
+  --region us-east-1
+
+Step 2 — Create NLB
+
+aws elbv2 create-load-balancer \
+  --name "nlb-wnxt-prod-user" \
+  --type network \
+  --scheme internal \
+  --subnets subnet-0961337a71cb4396c subnet-0c66766ac750883eb \
+  --region us-east-1
+
+Step 3 — Create Listener on port 11802
+
+aws elbv2 create-listener \
+  --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:604009108246:loadbalancer/net/nlb-wnxt-prod-user/bc5f3f03ce7dee31 \
+  --protocol TCP \
+  --port 11802 \
+  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-cstool/d3708d99996049ad \
+  --region us-east-1
+
+Step 4 — Attach Target Group to ASG
+
+aws autoscaling attach-load-balancer-target-groups \
+  --auto-scaling-group-name WNXT-PROD-USER-ASG \
+  --target-group-arns arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user-cstool/d3708d99996049ad \
+  --region us-east-1
+
+

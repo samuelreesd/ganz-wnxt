@@ -6,9 +6,9 @@
 
 REGION=us-east-1
 ASG_NAME=WNXT-PROD-USER-ASG
-LAUNCH_TEMPLATE_ID=REPLACE_WITH_PROD_LT_ID
-HEALTH_TG_ARN=REPLACE_WITH_HEALTH_TG_ARN_FROM_STEP_03
-EC2_SG=REPLACE_WITH_SG_FROM_STEP_02
+LAUNCH_TEMPLATE_ID=lt-0db8382b7b0f7b04c
+HEALTH_TG_ARN=arn:aws:elasticloadbalancing:us-east-1:604009108246:targetgroup/tgrp-wnxt-prod-user/c7f415e535febd23
+EC2_SG=sg-066a462b5d2f154d3
 
 aws autoscaling create-auto-scaling-group \
   --auto-scaling-group-name ${ASG_NAME} \

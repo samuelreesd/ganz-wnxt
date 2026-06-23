@@ -8,7 +8,7 @@ REGION=us-east-1
 NS="Ganz/Webkinz"
 ASG=WNXT-PROD-USER-ASG
 CLUSTER=WNXT-PROD-CLUSTER
-SNS_ARN=REPLACE_WITH_PROD_SNS_ARN_FROM_STEP_09
+SNS_ARN=arn:aws:sns:us-east-1:604009108246:WNXT-Prod-Alerts
 
 echo "[1/13] Mem % Used"
 aws cloudwatch put-metric-alarm \
