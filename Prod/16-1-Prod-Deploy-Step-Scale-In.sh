@@ -16,7 +16,7 @@ TARGET_VALUE=150
 
 # Scale in threshold = 30% of target value
 # e.g. 30% of 8.0 = 2.4
-SCALEIN_THRESHOLD=70
+SCALEIN_THRESHOLD=60
 
 # How many minutes sessions must stay below threshold before scale in
 SCALEIN_MINUTES=5

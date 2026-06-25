@@ -1,14 +1,14 @@
 *** Build the AMI from the WNXT Prod Image Builder 10.2.150.115
 aws ec2 create-image \
   --instance-id i-0819cfae81cfe42d9 \
-  --name "WNXT-Prod-User-AMI-v9" \
-  --description "WNXT Prod User AMI v9 - Setup S3 Centralized Logs" \
+  --name "WNXT-Prod-User-AMI-v11" \
+  --description "WNXT Prod User AMI Branch Build #133.0" \
   --no-reboot \
   --region us-east-1
 
 *** Check if the AMI is ready
 aws ec2 describe-images \
-  --filters "Name=name,Values=WNXT-Prod-User-AMI-v9" \
+  --filters "Name=name,Values=WNXT-Prod-User-AMI-v11" \
   --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
   --region us-east-1
 
@@ -34,10 +34,10 @@ aws ec2 describe-images \
 *************************************** Create new Launch Template version with new AMI
 aws ec2 create-launch-template-version \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --source-version 8 \
-  --version-description "v9 - Setup S3 Centralized Logs" \
+  --source-version 10 \
+  --version-description "v11 - Branch Build #133.0s" \
   --launch-template-data '{
-    "ImageId": "ami-0f742f2d2537452ec",
+    "ImageId": "ami-033b8f7ae639c382a",
     "InstanceType": "r5.large",
     "TagSpecifications": [
       {
@@ -58,10 +58,10 @@ aws ec2 describe-launch-template-versions \
   --output table \
   --region us-east-1
 
-*** Set v9 as default
+*** Set v10 as default
 aws ec2 modify-launch-template \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --default-version 9 \
+  --default-version 11 \
   --region us-east-1
 
 *** Confirm the default, latest version of the Launch Template
