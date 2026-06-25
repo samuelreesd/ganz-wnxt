@@ -1,0 +1,59 @@
+WNXT-PROD-USER-ASG (Auto Scaling Group)
+Dynamic scaling policy
+- policy type : Target Tracking Scaling
+- Scaling policy name : WNXT-PROD-USER-ASG-TargetTracking-Sessions
+- Metric type : Custom CloudWatch Metric
+
+Custom metric JSON:
+{
+"CustomizedMetricSpecification": {
+"MetricName": "Sessions",
+"Namespace": "Ganz/Webkinz",
+"Dimensions": [
+{
+"Name": "AutoScalingGroupName",
+"Value": "WNXT-PROD-USER-ASG"
+},
+{
+"Name": "ClusterName",
+"Value": "WNXT-PROD-CLUSTER"
+}
+],
+"Statistic": "Average"
+}
+}
+
+
+@@@@@@@@@@@@@@@@@@@@@@ Since we have only 1 or 2 instances in the ASG, YOYO can happen
+
+To prevent  YOYO,
+
+We will not let Target Tracking scale in automatically:
+
+Target Tracking = scale out only
+Step Scaling = controlled scale in
+
+And make scale-in very conservative, for example:
+
+Scale in only if Sessions < 4 per instance for 30 minutes
+Remove 1 instance
+
+----------
+- check mark the "Disable scale in" option in the Target Tracking policy settings to ensure that the ASG does not scale in automatically based on the target tracking metric.
+
+- Create Step Scaling Policy for Scale In
+
+Configuration Summary
+Target Tracking:
+  Scale Out → Sessions > 8.0 ✅
+  DisableScaleIn = true ✅
+
+Step Scaling Scale In:
+  Threshold  = 2.4 (30% of 8.0)
+  Duration   = 30 minutes (30 × 60s periods)
+  Remove     = 1 instance at a time
+
+-----------
+
+
+
