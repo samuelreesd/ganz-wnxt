@@ -16,3 +16,9 @@
       TARGET_VALUE=150.0
       SCALEIN_THRESHOLD=70
 03. Execute /Users/samuelr/work/ganz/wnxt/Prod/16-1-Prod-Deploy-Step-Scale-In.sh
+
+04. Pull latest Server Branch Build (Jenkins Job)
+
+05. Execute the deployment to the Builder (Jenkins Job)
+
+06. Create new Image and Launch Template and set default Launch Template Version
