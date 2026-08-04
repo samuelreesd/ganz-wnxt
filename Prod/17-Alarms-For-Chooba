@@ -1,0 +1,48 @@
+
+Step 1 — Create Director SNS Topic
+
+aws sns create-topic ^
+  --name WNXT-Prod-ASG-Events ^
+  --region us-east-1
+
+arn:aws:sns:us-east-1:604009108246:WNXT-Prod-ASG-Events 
+
+
+Step 2 — Subscribe Director
+
+
+aws sns subscribe ^
+  --topic-arn arn:aws:sns:us-east-1:604009108246:WNXT-Prod-ASG-Events ^
+  --protocol email ^
+  --notification-endpoint choobab@ganz.com ^
+  --region us-east-1
+
+
+Step 3 — Attach SNS to ASG Lifecycle Notifications
+
+aws autoscaling put-notification-configuration ^
+  --auto-scaling-group-name WNXT-PROD-USER-ASG ^
+  --topic-arn arn:aws:sns:us-east-1:604009108246:WNXT-Prod-ASG-Events ^
+  --notification-types ^
+    autoscaling:EC2_INSTANCE_LAUNCH ^
+    autoscaling:EC2_INSTANCE_TERMINATE ^
+  --region us-east-1
+
+
+What Director Will Receive
+On Scale Out:
+Subject: Auto Scaling: launch for group WNXT-PROD-USER-ASG
+  → New instance launched
+  → Instance ID
+  → Availability Zone
+On Scale In:
+Subject: Auto Scaling: terminate for group WNXT-PROD-USER-ASG
+  → Instance terminated
+  → Instance ID
+  → Availability Zone
+
+Verify
+
+aws autoscaling describe-notification-configurations ^
+  --auto-scaling-group-names WNXT-PROD-USER-ASG ^
+  --region us-east-1
