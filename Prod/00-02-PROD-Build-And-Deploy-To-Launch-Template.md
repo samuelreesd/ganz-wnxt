@@ -1,14 +1,14 @@
 *** Build the AMI from the WNXT Prod Image Builder 10.2.150.115
 aws ec2 create-image \
   --instance-id i-0819cfae81cfe42d9 \
-  --name "WNXT-Prod-User-AMI-v11" \
-  --description "WNXT Prod User AMI Branch Build #133.0" \
+  --name "WNXT-Prod-User-AMI-v12" \
+  --description "WNXT Prod User AMI Branch Build #133.1" \
   --no-reboot \
   --region us-east-1
 
 *** Check if the AMI is ready
 aws ec2 describe-images \
-  --filters "Name=name,Values=WNXT-Prod-User-AMI-v11" \
+  --filters "Name=name,Values=WNXT-Prod-User-AMI-v12" \
   --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
   --region us-east-1
 
@@ -17,7 +17,7 @@ aws ec2 describe-images \
   --launch-template-name lt-wnxt-prod-user \
   --version-description "v1 - WNXT Prod User For ASG" \
   --launch-template-data '{
-    "ImageId": "ami-0d7efa7f761fbeca9",
+    "ImageId": "ami-0e14a749e83e91208",
     "InstanceType": "m5.large",
     "IamInstanceProfile": {"Name": "ganz-cloudwatch-addnl-metrics"},
     "SecurityGroupIds": [
@@ -34,10 +34,10 @@ aws ec2 describe-images \
 *************************************** Create new Launch Template version with new AMI
 aws ec2 create-launch-template-version \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --source-version 10 \
-  --version-description "v11 - Branch Build #133.0s" \
+  --source-version 11 \
+  --version-description "v12 - Branch Build #133.1" \
   --launch-template-data '{
-    "ImageId": "ami-033b8f7ae639c382a",
+    "ImageId": "ami-0e14a749e83e91208",
     "InstanceType": "r5.large",
     "TagSpecifications": [
       {
@@ -58,10 +58,10 @@ aws ec2 describe-launch-template-versions \
   --output table \
   --region us-east-1
 
-*** Set v10 as default
+*** Set v12 as default
 aws ec2 modify-launch-template \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --default-version 11 \
+  --default-version 12 \
   --region us-east-1
 
 *** Confirm the default, latest version of the Launch Template
