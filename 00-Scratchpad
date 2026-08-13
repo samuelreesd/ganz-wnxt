@@ -1,6 +1,6 @@
 
 
-Step 1 — Delete old Simple Scaling policies
+Step 01 — Delete old Simple Scaling policies
 
 aws autoscaling delete-policy ^
   --auto-scaling-group-name WNXT-INT-USER-ASG ^
