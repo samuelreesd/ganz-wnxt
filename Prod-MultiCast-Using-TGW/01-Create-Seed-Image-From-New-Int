@@ -1,0 +1,24 @@
+Step 1 — Create Seed AMI from INT User Instance
+aws ec2 create-image \
+  --instance-id i-02424904b143c15ed \
+  --name "wnxt-prod-seed-v1" \
+  --description "WNXT Prod Seed AMI - AL2023 TGW multicast ready" \
+  --no-reboot \
+  --region us-east-1
+
+Check when ready:
+aws ec2 describe-images \
+  --filters "Name=name,Values=wnxt-prod-seed-v1" \
+  --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
+  --region us-east-1
+
+Step 2 — Get Security Group IDs
+
+aws ec2 describe-security-groups \
+  --filters \
+  "Name=vpc-id,Values=vpc-0bfee600d7427bf7c" \
+  "Name=group-name,Values=wnxt-gdc,wnxt-prod-common,wnxt-gsf,wnxt-prod-user,wnxt-prod-location,wnxt-prod-dcache,wnxt-prod-maintenance,wnxt-prod-web,wnxt-prod-sync" \
+  --query "SecurityGroups[*].{ID:GroupId,Name:GroupName}" \
+  --output table \
+  --region us-east-1
+

@@ -1,49 +1,30 @@
-*** Build the AMI from the WNXT Prod Image Builder 10.2.150.115
+*** Build the AMI from the WNXT Prod Image Builder 10.20.150.115
 aws ec2 create-image \
-  --instance-id i-0819cfae81cfe42d9 \
-  --name "WNXT-Prod-User-AMI-v14" \
-  --description "WNXT Prod User AMI Branch Build #157.1" \
+  --instance-id i-07d0055cac7d7dc3e \
+  --name "WNXT-Prod20-User-AMI-v5" \
+  --description "WNXT Prod20 User AMI Branch Build #154.2" \
   --no-reboot \
   --region us-east-1
 
 *** Check if the AMI is ready
 aws ec2 describe-images \
-  --filters "Name=name,Values=WNXT-Prod-User-AMI-v14" \
+  --filters "Name=name,Values=WNXT-Prod20-User-AMI-v5" \
   --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
-  --region us-east-1
-
-  *** Create the Launch Template !!!!!!!!!!!!!!!!!! EXECUTE ONLY FOR THE FIRST TIME !!!!!!!!!!!!
-  aws ec2 create-launch-template \
-  --launch-template-name lt-wnxt-prod-user \
-  --version-description "v1 - WNXT Prod User For ASG" \
-  --launch-template-data '{
-    "ImageId": "ami-054ab5931425a83c1",
-    "InstanceType": "m5.large",
-    "IamInstanceProfile": {"Name": "ganz-cloudwatch-addnl-metrics"},
-    "SecurityGroupIds": [
-      "sg-0aaa5de6c2c1ad13f",
-      "sg-8796e1f2",
-      "sg-a578b9db",
-      "sg-cf87b6b1",
-      "sg-08ce79c729380bebd",
-      "sg-066a462b5d2f154d3"
-    ]
-  }' \
   --region us-east-1
 
 *************************************** Create new Launch Template version with new AMI
 aws ec2 create-launch-template-version \
-  --launch-template-id lt-0db8382b7b0f7b04c \
-  --source-version 11 \
-  --version-description "v14 - Branch Build #157.1" \
+  --launch-template-id  lt-000c91378cae1aaa3  \
+  --source-version 3 \
+  --version-description "v4 - Trunk Build #422.3" \
   --launch-template-data '{
-    "ImageId": "ami-063ed35fb53570f1e",
-    "InstanceType": "r5.large",
+    "ImageId": "ami-0eb7a278bbb0a7928",
+    "InstanceType": "r7i.large",
     "TagSpecifications": [
       {
         "ResourceType": "instance",
         "Tags": [
-          {"Key": "Name", "Value": "wnxt-prod-user"}
+          {"Key": "Name", "Value": "wnxt-prod20-user"}
         ]
       }
     ]
@@ -53,33 +34,33 @@ aws ec2 create-launch-template-version \
 
 *** Check the Launch Template
 aws ec2 describe-launch-template-versions \
-  --launch-template-id lt-0db8382b7b0f7b04c \
+  --launch-template-id lt-000c91378cae1aaa3 \
   --query "LaunchTemplateVersions[*].{Version:VersionNumber,Default:DefaultVersion,Description:VersionDescription,AMI:LaunchTemplateData.ImageId,InstanceType:LaunchTemplateData.InstanceType}" \
   --output table \
   --region us-east-1
 
-*** Set v14 as default
+*** Set v4 as default
 aws ec2 modify-launch-template \
-  --launch-template-id lt-0db8382b7b0f7b04c \
-  --default-version 14 \
+  --launch-template-id lt-000c91378cae1aaa3 \
+  --default-version 4 \
   --region us-east-1
 
 *** Confirm the default, latest version of the Launch Template
 aws ec2 describe-launch-templates \
-  --launch-template-ids lt-0db8382b7b0f7b04c \
+  --launch-template-ids lt-000c91378cae1aaa3 \
   --query "LaunchTemplates[0].{Default:DefaultVersionNumber,Latest:LatestVersionNumber}" \
   --output table \
   --region us-east-1
 
 *** Verify ASG is Launching Instances
 aws autoscaling describe-auto-scaling-groups \
-  --auto-scaling-group-names WNXT-PROD-USER-ASG \
+  --auto-scaling-group-names WNXT-PROD20-USER-ASG \
   --query "AutoScalingGroups[*].{Desired:DesiredCapacity,Min:MinSize,Max:MaxSize,Instances:Instances[*].{ID:InstanceId,State:LifecycleState,Health:HealthStatus}}" \
   --region us-east-1
 
 *** Verify ASG is Launching Instances to show with IP
 aws ec2 describe-instances \
-  --filters "Name=tag:aws:autoscaling:groupName,Values=WNXT-PROD-USER-ASG" \
+  --filters "Name=tag:aws:autoscaling:groupName,Values=WNXT-PROD20-USER-ASG" \
             "Name=instance-state-name,Values=running" \
   --query "Reservations[*].Instances[*].{ID:InstanceId,IP:PrivateIpAddress,Name:Tags[?Key=='Name'].Value|[0],Type:InstanceType,State:State.Name}" \
   --output table \
@@ -87,14 +68,14 @@ aws ec2 describe-instances \
 
 *** List Metrics
 Prod$ aws cloudwatch list-metrics \
-  --namespace "Ganz/Webkinz" \
-  --dimensions Name=AutoScalingGroupName,Value=WNXT-PROD-USER-ASG \
+  --namespace "Ganz/Webkinz/Nxt/Prod20" \
+  --dimensions Name=AutoScalingGroupName,Value=WNXT-PROD20-USER-ASG \
   --region us-east-1
 
 ***
 # GRACEFUL SHUTDOWN LIFECYCLE HOOK Graceful Shutdown Lifecycle hook (describe it)
 aws autoscaling describe-lifecycle-hooks \
-  --auto-scaling-group-name WNXT-PROD-USER-ASG \
+  --auto-scaling-group-name WNXT-PROD20-USER-ASG \
   --region us-east-1
 
 ***
@@ -102,7 +83,7 @@ aws autoscaling describe-lifecycle-hooks \
 [root@ip-10-2-151-155 aw]# grep "LIFECYCLE_HOOK" /usr/local/bin/graceful-shutdown.sh
 LIFECYCLE_HOOK=WNXT-PROD-USER-TerminateHook
   --lifecycle-hook-name ${LIFECYCLE_HOOK} \
-[root@ip-10-2-151-155 aw]#
+[root@ip-10-20-151-155 aw]#
 
 ***
 # GRACEFUL SHUTDOWN LIFECYCLE HOOK crontab on the instance for Graceful Shutdown

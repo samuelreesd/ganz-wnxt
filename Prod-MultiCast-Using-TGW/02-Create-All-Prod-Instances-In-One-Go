@@ -1,0 +1,126 @@
+
+Step 1 — create seed AMIs from each INT instance:
+
+# wnxt-int-maintenance → wnxt-prod-seed-maintenance
+aws ec2 create-image --instance-id i-09826a4cecbb59e50 \
+  --name "wnxt-prod-seed-maintenance" --no-reboot --region us-east-1
+
+# wnxt-int-web → wnxt-prod-seed-web
+aws ec2 create-image --instance-id i-08af04db9fa605d79 \
+  --name "wnxt-prod-seed-web" --no-reboot --region us-east-1
+
+# wnxt-int-sync → wnxt-prod-seed-sync
+aws ec2 create-image --instance-id i-00d58bc1504ba382b \
+  --name "wnxt-prod-seed-sync" --no-reboot --region us-east-1
+
+# wnxt-int-location → wnxt-prod-seed-location
+aws ec2 create-image --instance-id i-0d52a3eb9d72b24f1 \
+  --name "wnxt-prod-seed-location" --no-reboot --region us-east-1
+
+# wnxt-int-dcache → wnxt-prod-seed-dcache
+aws ec2 create-image --instance-id i-027cab2639b4840ce \
+  --name "wnxt-prod-seed-dcache" --no-reboot --region us-east-1
+
+# wnxt-int-user → wnxt-prod-seed-user (used for both user and builder)
+aws ec2 create-image --instance-id i-02424904b143c15ed \
+  --name "wnxt-prod-seed-user" --no-reboot --region us-east-1
+
+
+Check when all are available:
+
+aws ec2 describe-images \
+  --filters "Name=name,Values=wnxt-prod-seed-*" \
+  --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
+  --output table \
+  --region us-east-1
+
+
+Step 2 — Launch New Prod Instances from Seed AMIs
+
+export SUBNET=subnet-0a420bf3f3b449495
+export INSTANCE_TYPE=r7i.large
+export KEY=webkinz-api-15Nov2021
+export IAM=ganz-cloudwatch-addnl-metrics
+export REGION=us-east-1
+
+# wnxt-prod-maintenance
+aws ec2 run-instances \
+  --image-id ami-0892d4131322b0e8a \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.107 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-0419c7194e6a3fc11 \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-maintenance}]' \
+  --region ${REGION}
+
+# wnxt-prod-web
+aws ec2 run-instances \
+  --image-id ami-0d6a414297d5817ea \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.102 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-0c52da659bc3dd92b \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-web}]' \
+  --region ${REGION}
+
+# wnxt-prod-sync
+aws ec2 run-instances \
+  --image-id ami-0a2b9d3baa3d98fc2 \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.104 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-0cb2b4d04ac626db2 \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-sync}]' \
+  --region ${REGION}
+
+# wnxt-prod-location
+aws ec2 run-instances \
+  --image-id ami-0d836c5d5a28a26fe \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.105 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-0fc878b356dbc20aa \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-location}]' \
+  --region ${REGION}
+
+# wnxt-prod-dcache
+aws ec2 run-instances \
+  --image-id ami-00431084873375bdd \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.106 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-05fbf560d71001d50 \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-dcache}]' \
+  --region ${REGION}
+
+# wnxt-prod-user
+aws ec2 run-instances \
+  --image-id ami-0256a93de7694c3bc \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.103 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-02a6164af4ea7fd93 \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-user}]' \
+  --region ${REGION}
+
+# wnxt-prod-user-builder
+aws ec2 run-instances \
+  --image-id ami-0256a93de7694c3bc \
+  --instance-type ${INSTANCE_TYPE} \
+  --subnet-id ${SUBNET} --private-ip-address 10.20.150.115 \
+  --iam-instance-profile Name=${IAM} --key-name ${KEY} \
+  --security-group-ids sg-0582a8fa5614c1f2b sg-04f65134b4ccaf675 sg-030475204b9217ebd sg-02a6164af4ea7fd93 \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=wnxt-prod-user-builder}]' \
+  --region ${REGION}
+
+
+
+Check if all instances are running
+
+aws ec2 describe-instances \
+  --filters \
+  "Name=tag:Name,Values=wnxt-prod-*" \
+  "Name=private-ip-address,Values=10.20.150.*" \
+  --query "Reservations[*].Instances[*].{Name:Tags[?Key=='Name'].Value|[0],ID:InstanceId,IP:PrivateIpAddress,State:State.Name}" \
+  --output table \
+  --region us-east-1
