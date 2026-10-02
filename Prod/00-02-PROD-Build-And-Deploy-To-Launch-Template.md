@@ -1,14 +1,14 @@
 *** Build the AMI from the WNXT Prod Image Builder 10.2.150.115
 aws ec2 create-image \
   --instance-id i-0819cfae81cfe42d9 \
-  --name "WNXT-Prod-User-AMI-v14" \
-  --description "WNXT Prod User AMI Branch Build #157.1" \
+  --name "WNXT-Prod-User-AMI-v15" \
+  --description "WNXT Prod User AMI Branch Build #159.1" \
   --no-reboot \
   --region us-east-1
 
 *** Check if the AMI is ready
 aws ec2 describe-images \
-  --filters "Name=name,Values=WNXT-Prod-User-AMI-v14" \
+  --filters "Name=name,Values=WNXT-Prod-User-AMI-v15" \
   --query "Images[*].{ID:ImageId,State:State,Name:Name}" \
   --region us-east-1
 
@@ -34,10 +34,10 @@ aws ec2 describe-images \
 *************************************** Create new Launch Template version with new AMI
 aws ec2 create-launch-template-version \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --source-version 11 \
-  --version-description "v14 - Branch Build #157.1" \
+  --source-version 12 \
+  --version-description "v15 - Branch Build #159.1" \
   --launch-template-data '{
-    "ImageId": "ami-063ed35fb53570f1e",
+    "ImageId": "ami-042a1456eaaae0d29",
     "InstanceType": "r5.large",
     "TagSpecifications": [
       {
@@ -58,10 +58,10 @@ aws ec2 describe-launch-template-versions \
   --output table \
   --region us-east-1
 
-*** Set v14 as default
+*** Set v15 as default
 aws ec2 modify-launch-template \
   --launch-template-id lt-0db8382b7b0f7b04c \
-  --default-version 14 \
+  --default-version 15 \
   --region us-east-1
 
 *** Confirm the default, latest version of the Launch Template
