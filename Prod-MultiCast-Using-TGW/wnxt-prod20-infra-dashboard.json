@@ -1,0 +1,1359 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 3,
+      "properties": {
+        "markdown": "# WNXT Prod20 \u2014 Infrastructure Dashboard (CPU / Memory / Network)\nCovers all Prod20 role servers plus the auto-scaling **WNXT-PROD20-USER-ASG** user fleet.\n\n**Note:** Memory widgets require the CloudWatch Agent to be installed and reporting to the `CWAgent` namespace (`mem_used_percent`) on each instance \u2014 if the agent isn't installed yet, those panels will show \"No data\". CPU, Network and Disk widgets use default EC2 metrics and need no agent."
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 3,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "## Section 1 \u2014 Auto Scaling User Fleet (`WNXT-PROD20-USER-ASG`)\nInstances in this ASG are created/terminated automatically, so these widgets use **search expressions** keyed on the `AutoScalingGroupName` dimension rather than fixed Instance IDs \u2014 they will always reflect whichever instances are currently in the group, including newly launched ones."
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 4,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "ASG CPU Utilization \u2014 Average across fleet (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{AWS/EC2,AutoScalingGroupName} MetricName=\"CPUUtilization\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG CPU Utilization \u2014 Average across fleet (%)"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6,
+      "y": 4,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "ASG CPU Utilization \u2014 Per Instance (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{CWAgent,InstanceId,AutoScalingGroupName} MetricName=\"cpu_usage_active\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG CPU Utilization \u2014 Per Instance (%) \u2014 requires CWAgent"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 4,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "ASG Memory Used \u2014 Average across fleet (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{CWAgent,AutoScalingGroupName} MetricName=\"mem_used_percent\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Memory Used \u2014 Average across fleet (%)"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 4,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "ASG Memory Used \u2014 Per Instance (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{CWAgent,InstanceId,AutoScalingGroupName} MetricName=\"mem_used_percent\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Memory Used \u2014 Per Instance (%) \u2014 requires CWAgent"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 10,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "ASG Network In \u2014 Average across fleet (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{AWS/EC2,AutoScalingGroupName} MetricName=\"NetworkIn\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Network In \u2014 Average across fleet (Bytes)"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 10,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "ASG Network Out \u2014 Average across fleet (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{AWS/EC2,AutoScalingGroupName} MetricName=\"NetworkOut\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Network Out \u2014 Average across fleet (Bytes)"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 10,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "title": "ASG Status Check Failed \u2014 Sum",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{AWS/EC2,AutoScalingGroupName} MetricName=\"StatusCheckFailed\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Sum', 60)",
+              "label": "ASG Status Check Failed \u2014 Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 16,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ASG Disk Read \u2014 Average across fleet (Bytes) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{CWAgent,AutoScalingGroupName} MetricName=\"diskio_read_bytes\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Disk Read \u2014 Average across fleet (Bytes) \u2014 requires CWAgent"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 16,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ASG Disk Write \u2014 Average across fleet (Bytes) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            {
+              "expression": "SEARCH('{CWAgent,AutoScalingGroupName} MetricName=\"diskio_write_bytes\" AutoScalingGroupName=\"WNXT-PROD20-USER-ASG\"', 'Average', 60)",
+              "label": "ASG Disk Write \u2014 Average across fleet (Bytes) \u2014 requires CWAgent"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 22,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "title": "ASG Capacity \u2014 Desired / In-Service / Min / Max",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/AutoScaling",
+            "GroupDesiredCapacity",
+            "AutoScalingGroupName",
+            "WNXT-PROD20-USER-ASG",
+            {
+              "label": "Desired Capacity",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/AutoScaling",
+            "GroupInServiceInstances",
+            "AutoScalingGroupName",
+            "WNXT-PROD20-USER-ASG",
+            {
+              "label": "In-Service Instances",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/AutoScaling",
+            "GroupMinSize",
+            "AutoScalingGroupName",
+            "WNXT-PROD20-USER-ASG",
+            {
+              "label": "Min Size",
+              "color": "#888780"
+            }
+          ],
+          [
+            "AWS/AutoScaling",
+            "GroupMaxSize",
+            "AutoScalingGroupName",
+            "WNXT-PROD20-USER-ASG",
+            {
+              "label": "Max Size",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "alarm",
+      "x": 0,
+      "y": 28,
+      "width": 12,
+      "height": 3,
+      "properties": {
+        "title": "Sessions High Alarm (Target Tracking input)",
+        "alarms": [
+          "arn:aws:cloudwatch:us-east-1:604009108246:alarm:WNXT-Prod20-Sessions-High"
+        ]
+      }
+    },
+    {
+      "type": "alarm",
+      "x": 12,
+      "y": 28,
+      "width": 12,
+      "height": 3,
+      "properties": {
+        "title": "Hung High Alarm",
+        "alarms": [
+          "arn:aws:cloudwatch:us-east-1:604009108246:alarm:WNXT-Prod20-Hung-High"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 31,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "## Section 2 \u2014 Servers Not in ASG (Asset Delivery, Location, Sync, Dcache, Maintenance)"
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 32,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "### Asset Delivery \u2014 `wnxt-prod-web-20`"
+      }
+    },
+    {
+      "type": "text",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "markdown": "**Instance ID:** `i-0e6dcc273ff6ef3c8`  \n**Root Volume:** `vol-024fe6dced19e4096`  \n**Instance type:** m7i.large  \n**Availability Zone:** us-east-1a  \n**Key name:** webkinz-api-15Nov2021  \n**Launch time:** 2026/10/01 09:25 GMT-4  \n**Security groups:** wnxt-prod-common, wnxt-gsf, wnxt-gdc, wnxt-prod-web  \n**Platform:** Linux/UNIX"
+      },
+      "x": 0,
+      "y": 33
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "CPU Utilization (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            "InstanceId",
+            "i-0e6dcc273ff6ef3c8",
+            {
+              "label": "CPU %",
+              "color": "#378ADD"
+            }
+          ]
+        ]
+      },
+      "x": 6,
+      "y": 33
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Memory Used (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "CWAgent",
+            "mem_used_percent",
+            "InstanceId",
+            "i-0e6dcc273ff6ef3c8",
+            {
+              "label": "Mem %",
+              "color": "#7F77DD"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 33
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Network In / Out (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            "InstanceId",
+            "i-0e6dcc273ff6ef3c8",
+            {
+              "label": "Network In",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            "InstanceId",
+            "i-0e6dcc273ff6ef3c8",
+            {
+              "label": "Network Out",
+              "color": "#BA7517"
+            }
+          ]
+        ]
+      },
+      "x": 18,
+      "y": 33
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Disk Read / Write (Bytes) \u2014 EBS vol-024fe6dced19e4096",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EBS",
+            "VolumeReadBytes",
+            "VolumeId",
+            "vol-024fe6dced19e4096",
+            {
+              "label": "Disk Read",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/EBS",
+            "VolumeWriteBytes",
+            "VolumeId",
+            "vol-024fe6dced19e4096",
+            {
+              "label": "Disk Write",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      },
+      "x": 0,
+      "y": 39
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Status Check Failed",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Sum",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "StatusCheckFailed",
+            "InstanceId",
+            "i-0e6dcc273ff6ef3c8",
+            {
+              "label": "Status Check Failed",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 39
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 45,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "### Location \u2014 `wnxt-prod-location-20`"
+      }
+    },
+    {
+      "type": "text",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "markdown": "**Instance ID:** `i-0015d1572d523448c`  \n**Root Volume:** `vol-03880a85675ea556f`  \n**Instance type:** m7i.large  \n**Availability Zone:** us-east-1a  \n**Key name:** webkinz-api-15Nov2021  \n**Launch time:** 2026/10/01 09:25 GMT-4  \n**Security groups:** wnxt-prod-common, wnxt-gsf, wnxt-gdc, wnxt-prod-location  \n**Platform:** Linux/UNIX"
+      },
+      "x": 0,
+      "y": 46
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "CPU Utilization (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            "InstanceId",
+            "i-0015d1572d523448c",
+            {
+              "label": "CPU %",
+              "color": "#378ADD"
+            }
+          ]
+        ]
+      },
+      "x": 6,
+      "y": 46
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Memory Used (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "CWAgent",
+            "mem_used_percent",
+            "InstanceId",
+            "i-0015d1572d523448c",
+            {
+              "label": "Mem %",
+              "color": "#7F77DD"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 46
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Network In / Out (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            "InstanceId",
+            "i-0015d1572d523448c",
+            {
+              "label": "Network In",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            "InstanceId",
+            "i-0015d1572d523448c",
+            {
+              "label": "Network Out",
+              "color": "#BA7517"
+            }
+          ]
+        ]
+      },
+      "x": 18,
+      "y": 46
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Disk Read / Write (Bytes) \u2014 EBS vol-03880a85675ea556f",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EBS",
+            "VolumeReadBytes",
+            "VolumeId",
+            "vol-03880a85675ea556f",
+            {
+              "label": "Disk Read",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/EBS",
+            "VolumeWriteBytes",
+            "VolumeId",
+            "vol-03880a85675ea556f",
+            {
+              "label": "Disk Write",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      },
+      "x": 0,
+      "y": 52
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Status Check Failed",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Sum",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "StatusCheckFailed",
+            "InstanceId",
+            "i-0015d1572d523448c",
+            {
+              "label": "Status Check Failed",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 52
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 58,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "### Sync \u2014 `wnxt-prod-sync-20`"
+      }
+    },
+    {
+      "type": "text",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "markdown": "**Instance ID:** `i-0da61dc1e8aef9537`  \n**Root Volume:** `vol-07d587fb610a46cda`  \n**Instance type:** m7i.large  \n**Availability Zone:** us-east-1a  \n**Key name:** webkinz-api-15Nov2021  \n**Launch time:** 2026/10/01 09:25 GMT-4  \n**Security groups:** wnxt-prod-sync, wnxt-prod-common, wnxt-gsf, wnxt-gdc  \n**Platform:** Linux/UNIX"
+      },
+      "x": 0,
+      "y": 59
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "CPU Utilization (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            "InstanceId",
+            "i-0da61dc1e8aef9537",
+            {
+              "label": "CPU %",
+              "color": "#378ADD"
+            }
+          ]
+        ]
+      },
+      "x": 6,
+      "y": 59
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Memory Used (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "CWAgent",
+            "mem_used_percent",
+            "InstanceId",
+            "i-0da61dc1e8aef9537",
+            {
+              "label": "Mem %",
+              "color": "#7F77DD"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 59
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Network In / Out (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            "InstanceId",
+            "i-0da61dc1e8aef9537",
+            {
+              "label": "Network In",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            "InstanceId",
+            "i-0da61dc1e8aef9537",
+            {
+              "label": "Network Out",
+              "color": "#BA7517"
+            }
+          ]
+        ]
+      },
+      "x": 18,
+      "y": 59
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Disk Read / Write (Bytes) \u2014 EBS vol-07d587fb610a46cda",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EBS",
+            "VolumeReadBytes",
+            "VolumeId",
+            "vol-07d587fb610a46cda",
+            {
+              "label": "Disk Read",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/EBS",
+            "VolumeWriteBytes",
+            "VolumeId",
+            "vol-07d587fb610a46cda",
+            {
+              "label": "Disk Write",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      },
+      "x": 0,
+      "y": 65
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Status Check Failed",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Sum",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "StatusCheckFailed",
+            "InstanceId",
+            "i-0da61dc1e8aef9537",
+            {
+              "label": "Status Check Failed",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 65
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 71,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "### DCache \u2014 `wnxt-prod-dcache-20`"
+      }
+    },
+    {
+      "type": "text",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "markdown": "**Instance ID:** `i-0b8e471467b1d37ef`  \n**Root Volume:** `vol-0ef3e36cc86cb600e`  \n**Instance type:** m7i.large  \n**Availability Zone:** us-east-1a  \n**Key name:** webkinz-api-15Nov2021  \n**Launch time:** 2026/10/01 09:25 GMT-4  \n**Security groups:** wnxt-prod-common, wnxt-gsf, wnxt-gdc, wnxt-prod-dcache  \n**Platform:** Linux/UNIX"
+      },
+      "x": 0,
+      "y": 72
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "CPU Utilization (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            "InstanceId",
+            "i-0b8e471467b1d37ef",
+            {
+              "label": "CPU %",
+              "color": "#378ADD"
+            }
+          ]
+        ]
+      },
+      "x": 6,
+      "y": 72
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Memory Used (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "CWAgent",
+            "mem_used_percent",
+            "InstanceId",
+            "i-0b8e471467b1d37ef",
+            {
+              "label": "Mem %",
+              "color": "#7F77DD"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 72
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Network In / Out (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            "InstanceId",
+            "i-0b8e471467b1d37ef",
+            {
+              "label": "Network In",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            "InstanceId",
+            "i-0b8e471467b1d37ef",
+            {
+              "label": "Network Out",
+              "color": "#BA7517"
+            }
+          ]
+        ]
+      },
+      "x": 18,
+      "y": 72
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Disk Read / Write (Bytes) \u2014 EBS vol-0ef3e36cc86cb600e",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EBS",
+            "VolumeReadBytes",
+            "VolumeId",
+            "vol-0ef3e36cc86cb600e",
+            {
+              "label": "Disk Read",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/EBS",
+            "VolumeWriteBytes",
+            "VolumeId",
+            "vol-0ef3e36cc86cb600e",
+            {
+              "label": "Disk Write",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      },
+      "x": 0,
+      "y": 78
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Status Check Failed",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Sum",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "StatusCheckFailed",
+            "InstanceId",
+            "i-0b8e471467b1d37ef",
+            {
+              "label": "Status Check Failed",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 78
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 84,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": "### Maintenance \u2014 `wnxt-prod-maintenance-20`"
+      }
+    },
+    {
+      "type": "text",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "markdown": "**Instance ID:** `i-080e8e46dac3de2f5`  \n**Root Volume:** `vol-0f8b59dcf31761733`  \n**Instance type:** m7i.large  \n**Availability Zone:** us-east-1a  \n**Key name:** webkinz-api-15Nov2021  \n**Launch time:** 2026/10/01 09:25 GMT-4  \n**Security groups:** wnxt-prod-common, wnxt-gsf, wnxt-gdc, wnxt-prod-maintenance  \n**Platform:** Linux/UNIX"
+      },
+      "x": 0,
+      "y": 85
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "CPU Utilization (%)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            "InstanceId",
+            "i-080e8e46dac3de2f5",
+            {
+              "label": "CPU %",
+              "color": "#378ADD"
+            }
+          ]
+        ]
+      },
+      "x": 6,
+      "y": 85
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Memory Used (%) \u2014 requires CWAgent",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "metrics": [
+          [
+            "CWAgent",
+            "mem_used_percent",
+            "InstanceId",
+            "i-080e8e46dac3de2f5",
+            {
+              "label": "Mem %",
+              "color": "#7F77DD"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 85
+    },
+    {
+      "type": "metric",
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "Network In / Out (Bytes)",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            "InstanceId",
+            "i-080e8e46dac3de2f5",
+            {
+              "label": "Network In",
+              "color": "#1D9E75"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            "InstanceId",
+            "i-080e8e46dac3de2f5",
+            {
+              "label": "Network Out",
+              "color": "#BA7517"
+            }
+          ]
+        ]
+      },
+      "x": 18,
+      "y": 85
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Disk Read / Write (Bytes) \u2014 EBS vol-0f8b59dcf31761733",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EBS",
+            "VolumeReadBytes",
+            "VolumeId",
+            "vol-0f8b59dcf31761733",
+            {
+              "label": "Disk Read",
+              "color": "#378ADD"
+            }
+          ],
+          [
+            "AWS/EBS",
+            "VolumeWriteBytes",
+            "VolumeId",
+            "vol-0f8b59dcf31761733",
+            {
+              "label": "Disk Write",
+              "color": "#E24B4A"
+            }
+          ]
+        ]
+      },
+      "x": 0,
+      "y": 91
+    },
+    {
+      "type": "metric",
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Status Check Failed",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Sum",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        },
+        "metrics": [
+          [
+            "AWS/EC2",
+            "StatusCheckFailed",
+            "InstanceId",
+            "i-080e8e46dac3de2f5",
+            {
+              "label": "Status Check Failed",
+              "color": "#E24B4A",
+              "stat": "Sum"
+            }
+          ]
+        ]
+      },
+      "x": 12,
+      "y": 91
+    }
+  ]
+}
